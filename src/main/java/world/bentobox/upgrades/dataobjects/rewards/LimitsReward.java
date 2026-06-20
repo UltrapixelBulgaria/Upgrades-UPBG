@@ -89,6 +89,10 @@ public class LimitsReward extends Reward {
                     Material mat = Material.valueOf(db.getTarget().toUpperCase());
                     int oldCount = isb.getBlockLimitsOffset(env).getOrDefault(mat.getKey(), 0);
                     isb.setBlockLimitsOffsetAllEnvs(mat.getKey(), oldCount + amount);
+                    int newLimit = bLListener.getMaterialLimits(island.getWorld(), island.getUniqueId())
+                            .getOrDefault(mat.getKey(), 0);
+                    user.sendMessage("upgrades.message.limitsnow",
+                            "[target]", mat.toString(), "[value]", String.valueOf(newLimit));
                 } catch (IllegalArgumentException e) {
                     addon.logWarning("LimitsReward: invalid material '" + db.getTarget() + "'");
                 }
@@ -97,14 +101,24 @@ public class LimitsReward extends Reward {
                 try {
                     EntityType et = EntityType.valueOf(db.getTarget().toUpperCase());
                     int oldCount = isb.getEntityLimitsOffset(env).getOrDefault(et, 0);
-                    isb.setEntityLimitsOffsetAllEnvs(et, oldCount + amount);
+                    int newOffset = oldCount + amount;
+                    isb.setEntityLimitsOffsetAllEnvs(et, newOffset);
+                    int baseLimit = addon.getLimitsAddon().getSettings().getLimits(env)
+                            .getOrDefault(et, 0);
+                    user.sendMessage("upgrades.message.limitsnow",
+                            "[target]", et.toString(), "[value]", String.valueOf(baseLimit + newOffset));
                 } catch (IllegalArgumentException e) {
                     addon.logWarning("LimitsReward: invalid entity type '" + db.getTarget() + "'");
                 }
             }
             case "ENTITY_GROUP" -> {
                 int oldCount = isb.getEntityGroupLimitsOffset(env).getOrDefault(db.getTarget(), 0);
-                isb.setEntityGroupLimitsOffsetAllEnvs(db.getTarget(), oldCount + amount);
+                int newOffset = oldCount + amount;
+                isb.setEntityGroupLimitsOffsetAllEnvs(db.getTarget(), newOffset);
+                int baseLimit = addon.getLimitsAddon().getSettings().getGroupLimits(env)
+                        .getOrDefault(db.getTarget(), 0);
+                user.sendMessage("upgrades.message.limitsnow",
+                        "[target]", db.getTarget(), "[value]", String.valueOf(baseLimit + newOffset));
             }
             default -> addon.logWarning("LimitsReward: unknown limit type '" + db.getLimitType() + "'");
         }

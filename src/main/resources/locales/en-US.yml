@@ -21,6 +21,7 @@ upgrades:
     skipupgradeload: "&c Upgrade [what] [upgradeId] was already loaded"
     upgradeload: "&a Upgrade [what] [upgradeId] was loaded"
     upgradesuccess: "&aUpgrade &e[name] &apurchased successfully!"
+    limitsnow: "&a[target] limit is now &e[value]&a."
   chatinput:
     admin:
       question:
