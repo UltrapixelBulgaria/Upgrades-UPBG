@@ -1,6 +1,7 @@
 package world.bentobox.upgrades.dataobjects.rewards;
 
 import org.bukkit.Material;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.EntityType;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -80,12 +81,14 @@ public class LimitsReward extends Reward {
             return;
         }
 
+        Environment env = island.getWorld().getEnvironment();
+
         switch (db.getLimitType().toUpperCase()) {
             case "BLOCK" -> {
                 try {
                     Material mat = Material.valueOf(db.getTarget().toUpperCase());
-                    int oldCount = isb.getBlockLimitsOffset().getOrDefault(mat.getKey(), 0);
-                    isb.setBlockLimitsOffset(mat.getKey(), oldCount + amount);
+                    int oldCount = isb.getBlockLimitsOffset(env).getOrDefault(mat.getKey(), 0);
+                    isb.setBlockLimitsOffsetAllEnvs(mat.getKey(), oldCount + amount);
                 } catch (IllegalArgumentException e) {
                     addon.logWarning("LimitsReward: invalid material '" + db.getTarget() + "'");
                 }
@@ -93,15 +96,15 @@ public class LimitsReward extends Reward {
             case "ENTITY" -> {
                 try {
                     EntityType et = EntityType.valueOf(db.getTarget().toUpperCase());
-                    int oldCount = isb.getEntityLimitsOffset().getOrDefault(et, 0);
-                    isb.setEntityLimitsOffset(et, oldCount + amount);
+                    int oldCount = isb.getEntityLimitsOffset(env).getOrDefault(et, 0);
+                    isb.setEntityLimitsOffsetAllEnvs(et, oldCount + amount);
                 } catch (IllegalArgumentException e) {
                     addon.logWarning("LimitsReward: invalid entity type '" + db.getTarget() + "'");
                 }
             }
             case "ENTITY_GROUP" -> {
-                int oldCount = isb.getEntityGroupLimitsOffset().getOrDefault(db.getTarget(), 0);
-                isb.setEntityGroupLimitsOffset(db.getTarget(), oldCount + amount);
+                int oldCount = isb.getEntityGroupLimitsOffset(env).getOrDefault(db.getTarget(), 0);
+                isb.setEntityGroupLimitsOffsetAllEnvs(db.getTarget(), oldCount + amount);
             }
             default -> addon.logWarning("LimitsReward: unknown limit type '" + db.getLimitType() + "'");
         }

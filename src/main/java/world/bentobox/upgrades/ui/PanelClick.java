@@ -18,14 +18,25 @@ public class PanelClick implements ClickHandler {
 	@Override
 	@SuppressWarnings("java:S3516")
 	public boolean onClick(Panel panel, User user, ClickType clickType, int slot) {
-		// The ClickHandler contract returns true to consume the click event regardless
-		// of whether the upgrade actually ran.
-		if (this.upgrade != null
-				&& (this.upgrade.getUpgradeValues(user) != null
-						|| this.upgrade.getOwnDescription(user) != null)
-				&& this.upgrade.canUpgrade(user, this.island)) {
-			user.closeInventory();
-			this.upgrade.doUpgrade(user, this.island);
+		if (this.upgrade == null) {
+			return true;
+		}
+
+		if (this.upgrade.getUpgradeValues(user) == null
+				&& this.upgrade.getOwnDescription(user) == null) {
+			user.sendMessage("upgrades.error.maxlevel");
+			return true;
+		}
+
+		if (!this.upgrade.canUpgrade(user, this.island)) {
+			user.sendMessage("upgrades.error.cannotafford");
+			return true;
+		}
+
+		user.closeInventory();
+		if (this.upgrade.doUpgrade(user, this.island)) {
+			user.sendMessage("upgrades.message.upgradesuccess",
+					"[name]", this.upgrade.getDisplayName());
 		}
 		return true;
 	}

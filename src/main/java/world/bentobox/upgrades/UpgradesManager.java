@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.entity.EntityType;
 
 import world.bentobox.bentobox.api.addons.GameModeAddon;
@@ -640,13 +640,14 @@ public class UpgradesManager {
         if (!this.addon.isLimitsProvided())
             return Collections.emptyMap();
 
+        Environment env = island.getWorld().getEnvironment();
         Map<EntityType, Integer> entityLimits = new HashMap<>(this.addon.getLimitsAddon()
                 .getSettings()
-                .getLimits());
+                .getLimits(env));
         IslandBlockCount ibc = this.addon.getLimitsAddon()
                 .getBlockLimitListener()
                 .getIsland(island.getUniqueId());
-        if (ibc != null) ibc.getEntityLimits()
+        if (ibc != null) ibc.getEntityLimits(env)
                 .forEach(entityLimits::put);
         return entityLimits;
     }
@@ -655,18 +656,14 @@ public class UpgradesManager {
         if (!this.addon.isLimitsProvided())
             return Collections.emptyMap();
 
+        Environment env = island.getWorld().getEnvironment();
         Map<String, Integer> entityGroupLimits = new HashMap<>(this.addon.getLimitsAddon()
                 .getSettings()
-                .getGroupLimits()
-                .values()
-                .stream()
-                .flatMap(e -> e.stream())
-                .distinct()
-                .collect(Collectors.toMap(e -> e.getName(), e -> e.getLimit())));
+                .getGroupLimits(env));
         IslandBlockCount ibc = this.addon.getLimitsAddon()
                 .getBlockLimitListener()
                 .getIsland(island.getUniqueId());
-        if (ibc != null) ibc.getEntityGroupLimits()
+        if (ibc != null) ibc.getEntityGroupLimits(env)
                 .forEach(entityGroupLimits::put);
         return entityGroupLimits;
     }

@@ -15,9 +15,12 @@ upgrades:
     upgradeinvalid: "&c Upgrade [what] [upgradeId] not valid. It will be ignored"
     unknownerror: "&c An error happened. You should look at the consol for error"
     noiteminhand: "&c You dont have any item in your main hand"
+    cannotafford: "&cYou cannot afford this upgrade!"
+    maxlevel: "&7This upgrade is already at max level."
   message:
     skipupgradeload: "&c Upgrade [what] [upgradeId] was already loaded"
     upgradeload: "&a Upgrade [what] [upgradeId] was loaded"
+    upgradesuccess: "&aUpgrade &e[name] &apurchased successfully!"
   chatinput:
     admin:
       question:
